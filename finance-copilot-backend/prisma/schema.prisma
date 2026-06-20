@@ -1,0 +1,190 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  FOUNDER
+  ACCOUNTANT
+  VIEWER
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ReceivableStatus {
+  OUTSTANDING
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+enum PayableStatus {
+  OUTSTANDING
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  incomes   Income[]
+  auditLogs AuditLog[]
+}
+
+model Income {
+  id            String   @id @default(uuid())
+  amount        Float
+  category      String
+  source        String
+  description   String?
+  date          DateTime
+  createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id])
+  createdAt     DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  amount      Float
+  category    String
+  vendorName  String
+  receiptUrl  String?
+  description String?
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
+
+model Client {
+  id             String        @id @default(uuid())
+  companyName    String
+  gstin          String?
+  email          String
+  phone          String
+  address        String
+  createdAt      DateTime      @default(now())
+  
+  // Relations
+  invoices       Invoice[]
+  receivables    Receivable[]
+}
+
+model Vendor {
+  id          String    @id @default(uuid())
+  vendorName  String
+  gstin       String?
+  email       String
+  phone       String
+  address     String
+  createdAt   DateTime  @default(now())
+  
+  // Relations
+  payables    Payable[]
+}
+
+model Receivable {
+  id             String           @id @default(uuid())
+  clientId       String
+  client         Client           @relation(fields: [clientId], references: [id])
+  invoiceId      String?          @unique
+  invoice        Invoice?         @relation(fields: [invoiceId], references: [id])
+  amount         Float
+  balance        Float
+  dueDate        DateTime
+  status         ReceivableStatus @default(OUTSTANDING)
+  createdAt      DateTime         @default(now())
+}
+
+model Payable {
+  id        String        @id @default(uuid())
+  vendorId  String
+  vendor    Vendor        @relation(fields: [vendorId], references: [id])
+  amount    Float
+  balance   Float
+  dueDate   DateTime
+  status    PayableStatus @default(OUTSTANDING)
+  createdAt DateTime      @default(now())
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  invoiceNumber String        @unique
+  clientId      String
+  client        Client        @relation(fields: [clientId], references: [id])
+  issueDate     DateTime      @default(now())
+  dueDate       DateTime
+  subtotal      Float
+  cgst          Float
+  sgst          Float
+  igst          Float
+  total         Float
+  status        InvoiceStatus @default(DRAFT)
+  pdfUrl        String?
+  createdAt     DateTime      @default(now())
+  
+  // Relations
+  items             InvoiceItem[]
+  receivable        Receivable?
+  recurringInvoice  RecurringInvoice?
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  hsnSac      String
+  quantity    Int
+  rate        Float
+  amount      Float
+  gstRate     Float
+  cgst        Float
+  sgst        Float
+  igst        Float
+  total       Float
+}
+
+model RecurringInvoice {
+  id         String   @id @default(uuid())
+  invoiceId  String   @unique
+  invoice    Invoice  @relation(fields: [invoiceId], references: [id])
+  frequency  String   // e.g. "MONTHLY", "QUARTERLY", "YEARLY"
+  nextRun    DateTime
+  active     Boolean  @default(true)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String   // "EMAIL" | "WHATSAPP" | "TELEGRAM"
+  recipient String   // Phone number or email
+  message   String
+  status    String   // "PENDING" | "SENT" | "FAILED"
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String   // Description of activity
+  ipAddress String?
+  createdAt DateTime @default(now())
+}

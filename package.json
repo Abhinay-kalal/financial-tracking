@@ -1,0 +1,16 @@
+{
+  "name": "finance-copilot-monorepo",
+  "version": "1.0.0",
+  "description": "Finance Copilot & GST Invoicing — Full-Stack Monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --kill-others --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix finance-copilot-backend\" \"npm run dev --prefix finance-copilot\"",
+    "dev:frontend": "npm run dev --prefix finance-copilot",
+    "dev:backend": "npm run dev --prefix finance-copilot-backend",
+    "build": "npm run build --prefix finance-copilot-backend && npm run build --prefix finance-copilot",
+    "install:all": "npm install --prefix finance-copilot && npm install --prefix finance-copilot-backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

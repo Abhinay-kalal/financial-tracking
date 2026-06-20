@@ -1,0 +1,413 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* ── Fintrix Color Tokens ── */
+    --fintrix-navy:      14 28 41;          /* #0E1C29  deep navy  */
+    --fintrix-navy-md:   22 42 62;          /* #162A3E  medium navy */
+    --fintrix-navy-lt:   37 63 89;          /* #253F59  light navy */
+    --fintrix-purple:    83 37 154;         /* #53259A  accent purple */
+    --fintrix-purple-lt: 107 58 177;        /* #6B3AB1  lighter purple */
+    --fintrix-bg:        244 247 250;       /* #F4F7FA  page bg */
+    --fintrix-bg-white:  255 255 255;       /* #FFFFFF  card bg */
+    --fintrix-border:    216 223 229;       /* #D8DFE5  border */
+    --fintrix-muted:     117 117 117;       /* #757575  muted text */
+    --fintrix-green:     34 197 94;         /* emerald  */
+    --fintrix-red:       239 68 68;         /* rose */
+    --fintrix-amber:     245 158 11;        /* amber */
+
+    /* Shadcn-compatible tokens mapped to Fintrix */
+    --background:         244 247 250 / 1;
+    --foreground:         14 28 41;
+    --card:               255 255 255;
+    --card-foreground:    14 28 41;
+    --popover:            255 255 255;
+    --popover-foreground: 14 28 41;
+    --primary:            83 37 154;
+    --primary-foreground: 255 255 255;
+    --secondary:          237 240 244;
+    --secondary-foreground: 37 63 89;
+    --muted:              237 240 244;
+    --muted-foreground:   117 117 117;
+    --accent:             237 240 244;
+    --accent-foreground:  14 28 41;
+    --destructive:        239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border:             216 223 229;
+    --input:              216 223 229;
+    --ring:               83 37 154;
+    --radius:             0.625rem;
+    --sidebar-width:      256px;
+    --sidebar-collapsed-width: 68px;
+  }
+
+  .dark {
+    --background:         14 28 41;
+    --foreground:         244 247 250;
+    --card:               22 42 62;
+    --card-foreground:    244 247 250;
+    --popover:            22 42 62;
+    --popover-foreground: 244 247 250;
+    --primary:            107 58 177;
+    --primary-foreground: 255 255 255;
+    --secondary:          37 63 89;
+    --secondary-foreground: 200 211 227;
+    --muted:              37 63 89;
+    --muted-foreground:   160 174 192;
+    --accent:             37 63 89;
+    --accent-foreground:  244 247 250;
+    --destructive:        239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border:             37 63 89;
+    --input:              37 63 89;
+    --ring:               107 58 177;
+  }
+}
+
+@layer base {
+  * { border-color: rgb(var(--border)); box-sizing: border-box; }
+
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-family: 'Inter', 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Instrument Sans', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX CARD SYSTEM
+───────────────────────────────────────── */
+.fintrix-card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border));
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(14,28,41,0.06), 0 1px 2px rgba(14,28,41,0.04);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.fintrix-card:hover {
+  box-shadow: 0 4px 16px rgba(14,28,41,0.10), 0 2px 6px rgba(14,28,41,0.06);
+  transform: translateY(-1px);
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX SIDEBAR
+───────────────────────────────────────── */
+.fintrix-sidebar {
+  background: rgb(14, 28, 41);
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.fintrix-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(200, 211, 227, 0.75);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.fintrix-nav-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+}
+.fintrix-nav-item.active {
+  background: rgba(107, 58, 177, 0.25);
+  color: #c4adf5;
+  border: 1px solid rgba(107, 58, 177, 0.35);
+}
+.fintrix-nav-item.active svg {
+  color: #a78bfa;
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX BUTTONS
+───────────────────────────────────────── */
+.btn-fintrix {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: 'Instrument Sans', sans-serif;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+.btn-fintrix-primary {
+  background: rgb(83, 37, 154);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(83,37,154,0.35);
+}
+.btn-fintrix-primary:hover {
+  background: rgb(107, 58, 177);
+  box-shadow: 0 4px 16px rgba(83,37,154,0.45);
+  transform: translateY(-1px);
+}
+.btn-fintrix-outline {
+  background: transparent;
+  color: rgb(83, 37, 154);
+  border: 1.5px solid rgb(83, 37, 154);
+}
+.btn-fintrix-outline:hover {
+  background: rgba(83,37,154,0.06);
+}
+.btn-fintrix-ghost {
+  background: transparent;
+  color: rgb(var(--muted-foreground));
+}
+.btn-fintrix-ghost:hover {
+  background: rgb(var(--accent));
+  color: rgb(var(--foreground));
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX KPI STAT CARDS
+───────────────────────────────────────── */
+.stat-card {
+  background: #fff;
+  border: 1px solid rgb(216, 223, 229);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(14,28,41,0.05);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.stat-card:hover {
+  box-shadow: 0 6px 20px rgba(14,28,41,0.09);
+  transform: translateY(-2px);
+}
+.dark .stat-card {
+  background: rgb(22, 42, 62);
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX TABLE
+───────────────────────────────────────── */
+.fintrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.fintrix-table th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgb(117,117,117);
+  padding: 10px 16px;
+  background: rgb(244,247,250);
+  border-bottom: 1px solid rgb(216,223,229);
+}
+.dark .fintrix-table th {
+  background: rgb(37,63,89);
+  color: rgb(160,174,192);
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+.fintrix-table td {
+  padding: 12px 16px;
+  font-size: 13.5px;
+  border-bottom: 1px solid rgb(244,247,250);
+  color: rgb(22,42,62);
+  vertical-align: middle;
+}
+.dark .fintrix-table td {
+  border-bottom-color: rgba(255,255,255,0.04);
+  color: rgb(200,211,227);
+}
+.fintrix-table tr:hover td {
+  background: rgba(83,37,154,0.03);
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX BADGE
+───────────────────────────────────────── */
+.fintrix-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.badge-green   { background: rgba(34,197,94,0.12);  color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
+.badge-red     { background: rgba(239,68,68,0.10);  color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
+.badge-amber   { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.2); }
+.badge-purple  { background: rgba(83,37,154,0.10);  color: #6B3AB1; border: 1px solid rgba(83,37,154,0.2); }
+.badge-navy    { background: rgba(14,28,41,0.08);   color: rgb(14,28,41); border: 1px solid rgba(14,28,41,0.15); }
+.dark .badge-navy { background: rgba(244,247,250,0.08); color: rgb(200,211,227); border-color: rgba(255,255,255,0.12); }
+
+/* ─────────────────────────────────────────
+   FINTRIX INPUT
+───────────────────────────────────────── */
+.fintrix-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid rgb(216,223,229);
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-family: 'Inter', sans-serif;
+  background: #fff;
+  color: rgb(14,28,41);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+.fintrix-input:focus {
+  border-color: rgb(83,37,154);
+  box-shadow: 0 0 0 3px rgba(83,37,154,0.12);
+}
+.dark .fintrix-input {
+  background: rgb(22,42,62);
+  border-color: rgba(255,255,255,0.1);
+  color: rgb(244,247,250);
+}
+.dark .fintrix-input:focus {
+  border-color: rgb(107,58,177);
+  box-shadow: 0 0 0 3px rgba(107,58,177,0.15);
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX SECTION TITLE
+───────────────────────────────────────── */
+.fintrix-section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: rgba(200,211,227,0.45);
+  padding: 0 12px;
+  margin-bottom: 4px;
+}
+
+/* ─────────────────────────────────────────
+   FINTRIX GRADIENT ACCENT
+───────────────────────────────────────── */
+.fintrix-gradient-text {
+  background: linear-gradient(135deg, #6B3AB1 0%, #9B6DDE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.fintrix-gradient-bg {
+  background: linear-gradient(135deg, #53259A 0%, #6B3AB1 100%);
+}
+
+/* ─────────────────────────────────────────
+   GLASS PANEL (auth pages)
+───────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(216,223,229,0.8);
+  box-shadow: 0 8px 32px rgba(14,28,41,0.12), 0 2px 8px rgba(14,28,41,0.06);
+}
+.dark .glass {
+  background: rgba(22,42,62,0.92);
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* ─────────────────────────────────────────
+   CARD HOVER
+───────────────────────────────────────── */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(14,28,41,0.10);
+}
+
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(83,37,154,0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(83,37,154,0.5); }
+
+/* ─────────────────────────────────────────
+   SIDEBAR TRANSITION
+───────────────────────────────────────── */
+.sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* ─────────────────────────────────────────
+   STATUS INDICATORS
+───────────────────────────────────────── */
+.status-paid     { background: rgba(34,197,94,0.12);  color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
+.status-pending  { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.2); }
+.status-overdue  { background: rgba(239,68,68,0.10);  color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
+.status-draft    { background: rgba(117,117,117,0.10); color: #6b7280; border: 1px solid rgba(117,117,117,0.2); }
+
+/* ─────────────────────────────────────────
+   GRADIENT TEXT (legacy compat)
+───────────────────────────────────────── */
+.gradient-text { 
+  background: linear-gradient(135deg, #6B3AB1, #9B6DDE);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.glow-primary {
+  box-shadow: 0 0 16px rgba(83,37,154,0.35), 0 0 32px rgba(83,37,154,0.12);
+}
+
+/* ─────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeUp { animation: fadeUp 0.4s ease both; }
+
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position:  1000px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ─────────────────────────────────────────
+   AUTH PAGE BG
+───────────────────────────────────────── */
+.auth-bg {
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(83,37,154,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(14,28,41,0.06) 0%, transparent 50%),
+    rgb(244,247,250);
+}
+.dark .auth-bg {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(107,58,177,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(244,247,250,0.03) 0%, transparent 50%),
+    rgb(14,28,41);
+}
