@@ -1,4 +1,3 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "finance-copilot/.next"
+  "rootDirectory": "finance-copilot"
 }
