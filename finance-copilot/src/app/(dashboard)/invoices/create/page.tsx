@@ -11,6 +11,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { invoiceService, clientService } from '@/lib/api/services';
 import { formatCurrency } from '@/lib/utils';
+import { mockClients } from '@/lib/mock-data';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { Invoice, InvoiceItem, GSTType, Client } from '@/types';
