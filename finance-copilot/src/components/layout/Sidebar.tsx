@@ -51,37 +51,61 @@ const bottomItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { sidebarCollapsed, toggleCollapse } = useUIStore();
+  const { sidebarCollapsed, toggleCollapse, sidebarOpen, setSidebarOpen } = useUIStore();
 
   return (
-    <motion.aside
-      animate={{ width: sidebarCollapsed ? 68 : 256 }}
-      transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
-      className="relative hidden md:flex flex-col h-screen z-40 overflow-hidden flex-shrink-0 fintrix-sidebar"
-    >
-      {/* ── Logo ── */}
-      <div className="flex items-center h-[60px] px-4 border-b border-white/[0.07] flex-shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          {/* Icon mark */}
-          <div className="w-8 h-8 rounded-lg fintrix-gradient-bg flex items-center justify-center flex-shrink-0 shadow-md">
-            <Wallet2 className="w-4 h-4 text-white" />
+    <>
+      {/* Mobile backdrop */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-xs"
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside
+        animate={{ width: sidebarCollapsed ? 68 : 256 }}
+        transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 md:relative flex flex-col h-screen overflow-hidden flex-shrink-0 fintrix-sidebar transition-transform duration-300 ease-in-out md:transition-none md:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        {/* ── Logo ── */}
+        <div className="flex items-center justify-between h-[60px] px-4 border-b border-white/[0.07] flex-shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Icon mark */}
+            <div className="w-8 h-8 rounded-lg fintrix-gradient-bg flex items-center justify-center flex-shrink-0 shadow-md">
+              <Wallet2 className="w-4 h-4 text-white" />
+            </div>
+            <AnimatePresence>
+              {!sidebarCollapsed && (
+                <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.18 }}
+                  className="overflow-hidden leading-tight"
+                >
+                  <p className="text-white font-semibold text-[14px] font-['Instrument_Sans',sans-serif] tracking-tight">Finance</p>
+                  <p className="text-[11px] text-white/40 font-medium tracking-wide">Copilot · GST</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <AnimatePresence>
-            {!sidebarCollapsed && (
-              <motion.div
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -8 }}
-                transition={{ duration: 0.18 }}
-                className="overflow-hidden leading-tight"
-              >
-                <p className="text-white font-semibold text-[14px] font-['Instrument_Sans',sans-serif] tracking-tight">Finance</p>
-                <p className="text-[11px] text-white/40 font-medium tracking-wide">Copilot · GST</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Mobile close button */}
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden p-1.5 rounded-lg hover:bg-white/5 text-white/60 hover:text-white"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
         </div>
-      </div>
 
       {/* ── Nav ── */}
       <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto overflow-x-hidden scrollbar-none">
@@ -188,5 +212,6 @@ export function Sidebar() {
         }
       </button>
     </motion.aside>
+    </>
   );
 }
