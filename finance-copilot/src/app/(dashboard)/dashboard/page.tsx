@@ -17,6 +17,8 @@ import { formatCurrency, formatDate, formatNumber } from '@/lib/utils';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import dynamic from 'next/dynamic';
+const NewsWidget = dynamic(() => import('@/components/widgets/NewsWidget'), { ssr: false });
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -359,6 +361,12 @@ export default function DashboardPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* ── Live Financial News ── */}
+      <motion.div {...fade(0.24)}>
+        <NewsWidget />
+      </motion.div>
+
     </div>
   );
 }

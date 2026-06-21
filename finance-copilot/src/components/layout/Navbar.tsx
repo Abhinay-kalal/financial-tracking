@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { useAuthStore, useUIStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import dynamic from 'next/dynamic';
+const MarketTicker = dynamic(() => import('@/components/widgets/MarketTicker'), { ssr: false });
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -20,7 +23,8 @@ export function Navbar() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     logout();
     router.push('/login');
   };

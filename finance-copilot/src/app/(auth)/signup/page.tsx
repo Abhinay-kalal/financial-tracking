@@ -10,13 +10,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { signupSchema, type SignupInput } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
-
-import { authService } from '@/lib/api/services';
+import { supabase } from '@/lib/supabase/client';
+import { toast } from 'react-hot-toast';
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const router = useRouter();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignupInput>({
@@ -25,17 +24,24 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupInput) => {
     setIsLoading(true);
-    setErrorMsg(null);
     try {
-      await authService.signup({
-        name: data.name,
+      const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
+        options: {
+          data: { name: data.name },
+        },
       });
-      localStorage.setItem('fc_signup_email', data.email);
-      router.push('/otp-verify');
+
+      if (error) {
+        toast.error(error.message || 'Failed to create account');
+        return;
+      }
+
+      toast.success('Account created! Please check your email to confirm.');
+      router.push('/login');
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || 'Failed to create account. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -68,12 +74,6 @@ export default function SignupPage() {
           </div>
         ))}
       </div>
-
-      {errorMsg && (
-        <div className="mb-4 p-3 rounded-lg border border-red-500/20 bg-red-500/10 text-xs text-rose-500 font-medium text-center">
-          {errorMsg}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">

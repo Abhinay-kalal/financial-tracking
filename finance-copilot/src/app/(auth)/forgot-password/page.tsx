@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/lib/validations';
+import { supabase } from '@/lib/supabase/client';
+import { toast } from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,9 +22,20 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (data: ForgotPasswordInput) => {
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setIsLoading(false);
-    setSent(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      setSent(true);
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,7 +53,7 @@ export default function ForgotPasswordPage() {
             <CheckCircle2 className="w-8 h-8 text-emerald-500" />
           </div>
           <h2 className="text-xl font-bold mb-2">Check your email</h2>
-          <p className="text-sm text-muted-foreground mb-6">We've sent a password reset link to your email address.</p>
+          <p className="text-sm text-muted-foreground mb-6">We&apos;ve sent a password reset link to your email address.</p>
           <Link href="/login">
             <Button variant="outline" className="w-full">Back to Login</Button>
           </Link>
@@ -48,7 +61,7 @@ export default function ForgotPasswordPage() {
       ) : (
         <>
           <h1 className="text-2xl font-bold mb-1">Forgot password?</h1>
-          <p className="text-muted-foreground text-sm mb-8">Enter your email and we'll send you a reset link.</p>
+          <p className="text-muted-foreground text-sm mb-8">Enter your email and we&apos;ll send you a reset link.</p>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="forgot-email">Email</Label>
