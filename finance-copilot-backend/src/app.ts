@@ -12,10 +12,22 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 app.use(cors({
-  origin: '*', // Customize to React/Next.js client origin in production
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    const allowed = [
+      process.env.FRONTEND_URL,
+      'http://localhost:3000',
+      'http://localhost:5000',
+    ].filter(Boolean);
+    if (allowed.includes(origin)) return callback(null, true);
+    // In development allow everything
+    if (process.env.NODE_ENV !== 'production') return callback(null, true);
+    return callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
 }));
 
 // Rate Limiting
@@ -56,8 +68,10 @@ const swaggerOptions: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000/api',
-        description: 'Development Server',
+        url: process.env.RAILWAY_PUBLIC_DOMAIN
+          ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/api`
+          : 'http://localhost:5000/api',
+        description: process.env.NODE_ENV === 'production' ? 'Production Server' : 'Development Server',
       },
     ],
     components: {
@@ -75,6 +89,11 @@ const swaggerOptions: swaggerJSDoc.Options = {
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Health check for Railway
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Base route redirection to /docs
 app.get('/', (_req: Request, res: Response) => {

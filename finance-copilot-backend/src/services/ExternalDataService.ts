@@ -4,10 +4,20 @@ import axios from 'axios';
 export const ExternalDataService = {
   getMarketData: async () => {
     try {
-      const [nifty, sensex] = await Promise.all([
-        yahooFinance.quote('^NSEI').catch(() => null),
-        yahooFinance.quote('^BSESN').catch(() => null),
-      ]);
+      let nifty: any = null;
+      let sensex: any = null;
+
+      try {
+        nifty = await yahooFinance.quote('^NSEI');
+      } catch (err) {
+        console.warn('Failed to fetch NIFTY quote:', err);
+      }
+
+      try {
+        sensex = await yahooFinance.quote('^BSESN');
+      } catch (err) {
+        console.warn('Failed to fetch SENSEX quote:', err);
+      }
 
       return {
         nifty: nifty ? {
