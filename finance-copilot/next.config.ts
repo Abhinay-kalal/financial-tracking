@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: path.resolve(__dirname, ".."),
+  },
   async rewrites() {
     // In production (Vercel), NEXT_PUBLIC_API_URL points to Railway backend.
     // In development, falls back to localhost:5000.
