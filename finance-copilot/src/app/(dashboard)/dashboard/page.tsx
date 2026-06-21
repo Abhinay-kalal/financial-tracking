@@ -26,8 +26,6 @@ const fade = (delay = 0) => ({
   transition: { duration: 0.4, delay, ease: [0.4, 0, 0.2, 1] },
 });
 
-];
-
 interface TooltipProps {
   active?: boolean;
   payload?: Array<{ name: string; value: number; color: string }>;

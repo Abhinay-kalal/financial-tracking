@@ -17,6 +17,7 @@ import { receivableService } from '@/lib/api/services';
 import { mockReceivables } from '@/lib/mock-data';
 import type { Receivable } from '@/types';
 import { toast } from 'react-hot-toast';
+import { formatCurrency, formatDate } from '@/lib/utils';
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
