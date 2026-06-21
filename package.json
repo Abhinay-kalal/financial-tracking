@@ -7,9 +7,10 @@
     "dev": "concurrently --kill-others --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix finance-copilot-backend\" \"npm run dev --prefix finance-copilot\"",
     "dev:frontend": "npm run dev --prefix finance-copilot",
     "dev:backend": "npm run dev --prefix finance-copilot-backend",
-    "build": "npm run build --prefix finance-copilot-backend && npm run build --prefix finance-copilot",
+    "build": "npm install --prefix finance-copilot-backend && npm run build --prefix finance-copilot-backend && npx prisma generate --schema=finance-copilot-backend/prisma/schema.prisma",
     "vercel-build": "npm install --prefix finance-copilot && npm run build --prefix finance-copilot",
-    "install:all": "npm install --prefix finance-copilot && npm install --prefix finance-copilot-backend"
+    "install:all": "npm install --prefix finance-copilot && npm install --prefix finance-copilot-backend",
+    "start": "node finance-copilot-backend/dist/server.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
